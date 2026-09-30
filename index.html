@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>StudyMate AI – Personal Study Planner</title>
+  <meta name="description" content="AI-powered personalized study planner that turns your available study time into a realistic, high-yielding study schedule.">
+  
+  <!-- Modern Typography Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  
+  <!-- Chart.js for data visualization -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <!-- Application Stylesheet -->
+  <link rel="stylesheet" href="static/css/style.css">
+</head>
+<body>
+
+  <!-- Toast Notification Alert System -->
+  <div id="toast-container" class="toast-container"></div>
+
+  <!-- Navigation Bar -->
+  <header class="app-header">
+    <div class="header-inner container">
+      <div class="brand" id="brand-home-btn" role="button" tabindex="0">
+        <div class="brand-icon">✨</div>
+        <div class="brand-text">
+          <span class="brand-title">StudyMate <span class="ai-badge">AI</span></span>
+          <span class="brand-tagline">Personal Study Planner</span>
+        </div>
+      </div>
+      
+      <nav class="nav-links">
+        <button id="nav-landing-btn" class="nav-btn active">Home</button>
+        <button id="nav-planner-btn" class="nav-btn">Planner</button>
+        <button id="nav-demo-btn" class="nav-btn nav-btn-demo">⚡ Quick Demo</button>
+        <button id="nav-api-btn" class="nav-btn nav-btn-outline" title="Configure AI API Key (Optional)">
+          🔑 <span class="hide-mobile">AI Key</span>
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <!-- MAIN APPLICATION CONTENT -->
+  <main class="main-content">
+
+    <!-- 1. LANDING PAGE SECTION -->
+    <section id="landing-section" class="view-section active">
+      <div class="hero-container container">
+        <div class="hero-badge">
+          <span class="pulse-dot"></span> Smart Exam Preparation Engine
+        </div>
+        
+        <h1 class="hero-title">StudyMate <span class="gradient-text">AI</span></h1>
+        <h2 class="hero-subtitle">Your Personalized AI Study Planner</h2>
+        
+        <p class="hero-description">
+          Turn your available study time into a smart, realistic study plan. Balanced daily schedules, 
+          prioritized weak subjects, smart breaks, and AI-driven pedagogical strategies.
+        </p>
+
+        <div class="hero-actions">
+          <button id="hero-create-btn" class="btn btn-primary btn-lg">
+            Create My Study Plan <span class="btn-arrow">→</span>
+          </button>
+          <button id="hero-demo-btn" class="btn btn-outline btn-lg">
+            ⚡ Try Workshop Demo (Manvitha)
+          </button>
+        </div>
+
+        <!-- 3 Feature Cards -->
+        <div class="feature-grid">
+          <div class="feature-card">
+            <div class="feature-icon-wrapper">
+              <span class="feature-icon">🎯</span>
+            </div>
+            <h3 class="feature-title">Personalized Planning</h3>
+            <p class="feature-text">
+              Dynamically weights weak topics for deep mastery while keeping strong subjects sharp with targeted revision.
+            </p>
+          </div>
+
+          <div class="feature-card">
+            <div class="feature-icon-wrapper">
+              <span class="feature-icon">⏱️</span>
+            </div>
+            <h3 class="feature-title">Smart Time Management</h3>
+            <p class="feature-text">
+              Zero burnout. Never exceeds your daily hour budget and weaves in restorative breaks for peak cognitive stamina.
+            </p>
+          </div>
+
+          <div class="feature-card">
+            <div class="feature-icon-wrapper">
+              <span class="feature-icon">🤖</span>
+            </div>
+            <h3 class="feature-title">AI-Powered Recommendations</h3>
+            <p class="feature-text">
+              Delivers tailored daily strategies, mock exam countdowns, and active-recall recommendations tuned to your exam goal.
+            </p>
+          </div>
+        </div>
+
+        <!-- Trust bar -->
+        <div class="trust-bar">
+          <span class="trust-item">✨ 100% Offline Capable</span>
+          <span class="trust-divider">•</span>
+          <span class="trust-item">🛡️ No Over-scheduling Guarantee</span>
+          <span class="trust-divider">•</span>
+          <span class="trust-item">📈 Real-time Progress Tracking</span>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- 2. STUDENT INPUT FORM SECTION -->
+    <section id="input-section" class="view-section">
+      <div class="form-container container">
+        
+        <!-- Form Header -->
+        <div class="section-header">
+          <div class="header-left">
+            <span class="section-tag">Step 1 of 2</span>
+            <h2 class="section-title">Configure Your Study Profile</h2>
+            <p class="section-subtitle">Provide your subjects, exam timeline, and preferences for a tailored timetable.</p>
+          </div>
+          <div class="header-right">
+            <button id="form-fill-demo-btn" class="btn btn-sm btn-outline-purple">
+              ✨ Fill Demo Data (Manvitha)
+            </button>
+          </div>
+        </div>
+
+        <form id="study-planner-form" class="planner-form" novalidate>
+          
+          <div class="form-grid">
+            
+            <!-- Left Column: Student & Timeline -->
+            <div class="form-column">
+              <div class="card form-card">
+                <h3 class="card-title"><span class="icon">👤</span> Basic Information</h3>
+
+                <!-- Student Name -->
+                <div class="form-group">
+                  <label for="student-name" class="form-label">Student Name</label>
+                  <input type="text" id="student-name" class="form-input" placeholder="e.g. Manvitha" required>
+                  <span class="field-hint">Used to personalize your daily dashboard and study notes.</span>
+                </div>
+
+                <!-- Exam Date -->
+                <div class="form-group">
+                  <label for="exam-date" class="form-label">
+                    Target Exam Date
+                    <span class="badge badge-subtle" id="exam-countdown-badge">Select date</span>
+                  </label>
+                  <input type="date" id="exam-date" class="form-input" required>
+                  <span class="field-hint">Must be today or a future date.</span>
+                </div>
+
+                <!-- Available Study Hours Per Day & Study Days in 2-col row -->
+                <div class="form-row-2">
+                  <div class="form-group">
+                    <label for="study-hours" class="form-label">Daily Study Hours</label>
+                    <div class="input-with-suffix">
+                      <input type="number" id="study-hours" class="form-input" min="1" max="14" step="0.5" value="4" required>
+                      <span class="suffix">hrs / day</span>
+                    </div>
+                    <span class="field-hint">Positive number (1 - 14)</span>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="study-days" class="form-label">Number of Days</label>
+                    <div class="input-with-suffix">
+                      <input type="number" id="study-days" class="form-input" min="1" max="60" step="1" value="7" required>
+                      <span class="suffix">days</span>
+                    </div>
+                    <span class="field-hint">Duration of plan</span>
+                  </div>
+                </div>
+
+                <!-- Study Goal -->
+                <div class="form-group">
+                  <label class="form-label">Main Study Goal</label>
+                  <div class="goal-options-grid">
+                    <label class="goal-option-card">
+                      <input type="radio" name="study-goal" value="Score high" checked>
+                      <div class="goal-content">
+                        <span class="goal-icon">🏆</span>
+                        <div class="goal-texts">
+                          <span class="goal-name">Score High</span>
+                          <span class="goal-desc">Deep problem-solving & 90%+ mock drills</span>
+                        </div>
+                      </div>
+                    </label>
+
+                    <label class="goal-option-card">
+                      <input type="radio" name="study-goal" value="Pass the exam">
+                      <div class="goal-content">
+                        <span class="goal-icon">🎓</span>
+                        <div class="goal-texts">
+                          <span class="goal-name">Pass The Exam</span>
+                          <span class="goal-desc">High-yield concepts & past questions</span>
+                        </div>
+                      </div>
+                    </label>
+
+                    <label class="goal-option-card">
+                      <input type="radio" name="study-goal" value="Complete syllabus">
+                      <div class="goal-content">
+                        <span class="goal-icon">📖</span>
+                        <div class="goal-texts">
+                          <span class="goal-name">Complete Syllabus</span>
+                          <span class="goal-desc">Systematic & balanced coverage</span>
+                        </div>
+                      </div>
+                    </label>
+
+                    <label class="goal-option-card">
+                      <input type="radio" name="study-goal" value="Revise everything">
+                      <div class="goal-content">
+                        <span class="goal-icon">🔄</span>
+                        <div class="goal-texts">
+                          <span class="goal-name">Revise Everything</span>
+                          <span class="goal-desc">Rapid recall, formula sheets & testing</span>
+                        </div>
+                      </div>
+                    </label>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
+            <!-- Right Column: Subjects & Priorities -->
+            <div class="form-column">
+              <div class="card form-card">
+                <h3 class="card-title"><span class="icon">📚</span> Subjects & Academic Priority</h3>
+
+                <!-- Dynamic Subject Entry -->
+                <div class="form-group">
+                  <label class="form-label">Subjects to Study <span class="required">*</span></label>
+                  <div class="subject-input-wrapper">
+                    <input type="text" id="new-subject-input" class="form-input" placeholder="Type subject (e.g. Mathematics, Java) and press Enter">
+                    <button type="button" id="add-subject-btn" class="btn btn-secondary">
+                      + Add
+                    </button>
+                  </div>
+
+                  <!-- Quick Add Suggestions -->
+                  <div class="quick-add-container">
+                    <span class="quick-add-label">Quick Suggestions:</span>
+                    <button type="button" class="quick-chip" data-subject="Mathematics">+ Mathematics</button>
+                    <button type="button" class="quick-chip" data-subject="Java">+ Java</button>
+                    <button type="button" class="quick-chip" data-subject="Python">+ Python</button>
+                    <button type="button" class="quick-chip" data-subject="Data Structures">+ Data Structures</button>
+                    <button type="button" class="quick-chip" data-subject="DBMS">+ DBMS</button>
+                  </div>
+
+                  <!-- Active Subject Tags -->
+                  <div id="subjects-chip-list" class="chips-container">
+                    <!-- Populated dynamically via JS -->
+                  </div>
+                  <span class="field-hint">Add at least one subject. Click '×' on any subject chip to remove it.</span>
+                </div>
+
+                <!-- Weak Subjects Selector -->
+                <div class="form-group">
+                  <label class="form-label">
+                    🔴 Weak Subjects <span class="badge badge-danger">High Priority • Extra Study Time</span>
+                  </label>
+                  <p class="field-desc">Click subjects below to mark them as weak. They will receive prime focus blocks.</p>
+                  <div id="weak-subjects-container" class="toggle-chips-container">
+                    <span class="text-muted-empty">Add subjects above first.</span>
+                  </div>
+                </div>
+
+                <!-- Strong Subjects Selector -->
+                <div class="form-group">
+                  <label class="form-label">
+                    🟢 Strong Subjects <span class="badge badge-success">Low Priority • Targeted Revision</span>
+                  </label>
+                  <p class="field-desc">Click subjects you are confident in. Scheduled primarily for practice and tests.</p>
+                  <div id="strong-subjects-container" class="toggle-chips-container">
+                    <span class="text-muted-empty">Add subjects above first.</span>
+                  </div>
+                </div>
+
+                <!-- Timing & Break Preferences in 2-col row -->
+                <div class="form-row-2">
+                  <div class="form-group">
+                    <label for="preferred-time" class="form-label">Preferred Study Window</label>
+                    <select id="preferred-time" class="form-select">
+                      <option value="Morning" selected>🌅 Morning (Starts ~9:00 AM)</option>
+                      <option value="Afternoon">☀️ Afternoon (Starts ~2:00 PM)</option>
+                      <option value="Evening">🌙 Evening (Starts ~6:00 PM)</option>
+                      <option value="Flexible">⚡ Flexible (Starts ~10:00 AM)</option>
+                    </select>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="break-preference" class="form-label">Daily Break Preference</label>
+                    <select id="break-preference" class="form-select">
+                      <option value="10m">10m Short Refresh</option>
+                      <option value="15m" selected>15m Pomodoro Style (Optimal)</option>
+                      <option value="20m">20m Restorative Break</option>
+                    </select>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Submit CTA Card -->
+          <div class="form-actions-card">
+            <button type="submit" id="generate-plan-btn" class="btn btn-primary btn-xl submit-btn">
+              <span class="btn-sparkle">✨</span>
+              <span class="btn-text">Generate My AI Study Plan</span>
+              <span class="btn-spinner hidden" id="generate-spinner"></span>
+            </button>
+            <p class="submit-note">
+              🛡️ Rule-based fallback active. Always generates an optimized plan instantly without crashing.
+            </p>
+          </div>
+
+        </form>
+      </div>
+    </section>
+
+
+    <!-- 3. RESULTS DASHBOARD SECTION -->
+    <section id="dashboard-section" class="view-section">
+      <div class="dashboard-container container">
+        
+        <!-- Top Greeting & Action Header -->
+        <div class="dashboard-header">
+          <div class="greeting-box">
+            <h1 class="student-greeting" id="dash-student-greeting">Hi, Student! 👋</h1>
+            <p class="student-subgreeting">Here is your personalized study plan.</p>
+            <div class="source-tag" id="dash-engine-source">⚡ Powered by StudyMate Core Engine</div>
+          </div>
+
+          <div class="dashboard-actions">
+            <button id="dash-timer-btn" class="btn btn-primary">
+              ⏱️ Start Today's Session
+            </button>
+            <button id="dash-regenerate-btn" class="btn btn-secondary">
+              🔄 Regenerate Plan
+            </button>
+            <button id="dash-edit-btn" class="btn btn-outline">
+              ✏️ Edit Inputs
+            </button>
+            <button id="dash-print-btn" class="btn btn-outline" title="Print or save as PDF">
+              🖨️ Print Plan
+            </button>
+          </div>
+        </div>
+
+        <!-- 4 Summary Cards -->
+        <div class="summary-cards-grid">
+          <div class="summary-card">
+            <div class="summary-icon-box bg-blue-subtle">📚</div>
+            <div class="summary-meta">
+              <span class="summary-label">Total Subjects</span>
+              <span class="summary-value" id="summary-subjects-count">5</span>
+              <span class="summary-sub" id="summary-subjects-sub">Balanced distribution</span>
+            </div>
+          </div>
+
+          <div class="summary-card">
+            <div class="summary-icon-box bg-purple-subtle">⏰</div>
+            <div class="summary-meta">
+              <span class="summary-label">Daily Study Hours</span>
+              <span class="summary-value" id="summary-daily-hours">4.0 hrs</span>
+              <span class="summary-sub">Zero over-scheduling</span>
+            </div>
+          </div>
+
+          <div class="summary-card">
+            <div class="summary-icon-box bg-green-subtle">📅</div>
+            <div class="summary-meta">
+              <span class="summary-label">Study Days</span>
+              <span class="summary-value" id="summary-days-count">7 days</span>
+              <span class="summary-sub" id="summary-total-hours">28 hrs total</span>
+            </div>
+          </div>
+
+          <div class="summary-card">
+            <div class="summary-icon-box bg-amber-subtle">🎯</div>
+            <div class="summary-meta">
+              <span class="summary-label">Main Goal</span>
+              <span class="summary-value" id="summary-goal">Score High</span>
+              <span class="summary-sub">Deep problem-solving</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- AI Study Strategy Explanation Card -->
+        <div class="strategy-card card">
+          <div class="strategy-header">
+            <div class="strategy-title-wrapper">
+              <span class="ai-sparkle-icon">💡</span>
+              <h3 class="strategy-title">AI Study Strategy</h3>
+            </div>
+            <span class="strategy-badge">Pedagogical Analysis</span>
+          </div>
+          <p class="strategy-text" id="dash-strategy-text">
+            Your weak subjects receive more study time, while strong subjects are scheduled mainly for revision and practice.
+          </p>
+        </div>
+
+        <!-- Today's Focus Card (Visually Prominent) -->
+        <div class="today-focus-card card" id="today-focus-card">
+          <div class="focus-glow-orb"></div>
+          <div class="focus-content">
+            <div class="focus-tag">
+              <span class="live-dot"></span> 🎯 TODAY'S FOCUS
+            </div>
+            <div class="focus-main-info">
+              <div class="focus-subject-wrapper">
+                <h2 class="focus-subject" id="focus-subject-name">Mathematics</h2>
+                <span class="focus-priority-pill" id="focus-priority-pill">🔴 High Priority</span>
+              </div>
+              <h4 class="focus-topic" id="focus-topic-name">Limits, Continuity & Differentiation</h4>
+              <p class="focus-activity" id="focus-activity-name">Activity: Concept Learning & Deep Foundation</p>
+            </div>
+            <div class="focus-footer">
+              <div class="focus-duration-pill">
+                ⏳ Duration: <strong id="focus-duration-text">60 minutes</strong>
+              </div>
+              <div class="focus-quote">
+                💬 <span class="quote-text" id="focus-motivational-tip">"Focus on understanding concepts before memorizing formulas."</span>
+              </div>
+              <button id="focus-launch-timer-btn" class="btn btn-sm btn-accent">
+                ▶ Start 25m Timer
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Progress & Allocation Section -->
+        <div class="progress-section card">
+          <div class="section-top-bar">
+            <div>
+              <h3 class="card-title">📊 Study Allocation & Learning Breakdown</h3>
+              <p class="section-subtitle">Real-time breakdown of hours across subjects and pedagogical stages.</p>
+            </div>
+            <div class="total-hours-badge">
+              Total Budget: <strong id="progress-total-planned-hours">28 hrs</strong>
+            </div>
+          </div>
+
+          <!-- 3 Activity Stage Meters -->
+          <div class="stage-meters-grid">
+            <div class="meter-card">
+              <div class="meter-header">
+                <span class="meter-label">📘 Concept Learning</span>
+                <span class="meter-percent" id="concept-pct-text">40%</span>
+              </div>
+              <div class="progress-bar-bg">
+                <div class="progress-bar-fill fill-blue" id="concept-pct-bar" style="width: 40%"></div>
+              </div>
+              <span class="meter-sub">Theory, core understanding & notes</span>
+            </div>
+
+            <div class="meter-card">
+              <div class="meter-header">
+                <span class="meter-label">⚡ Practice & Application</span>
+                <span class="meter-percent" id="practice-pct-text">35%</span>
+              </div>
+              <div class="progress-bar-bg">
+                <div class="progress-bar-fill fill-purple" id="practice-pct-bar" style="width: 35%"></div>
+              </div>
+              <span class="meter-sub">Problem solving & exception handling</span>
+            </div>
+
+            <div class="meter-card">
+              <div class="meter-header">
+                <span class="meter-label">🎯 Timed Revision & Tests</span>
+                <span class="meter-percent" id="revision-pct-text">25%</span>
+              </div>
+              <div class="progress-bar-bg">
+                <div class="progress-bar-fill fill-green" id="revision-pct-bar" style="width: 25%"></div>
+              </div>
+              <span class="meter-sub">Mock exams, flashcards & speed drills</span>
+            </div>
+          </div>
+
+          <!-- Subject Allocation Breakdown -->
+          <div class="subject-allocation-layout">
+            <div class="chart-container">
+              <canvas id="subjectHoursChart"></canvas>
+            </div>
+            <div class="allocation-legend-list" id="allocation-legend-list">
+              <!-- Dynamically populated subject hours bars -->
+            </div>
+          </div>
+        </div>
+
+        <!-- 5. DAILY STUDY PLAN SECTION -->
+        <div class="daily-plan-section">
+          <div class="daily-plan-header">
+            <div>
+              <h2 class="section-title">📅 Daily Study Timetable</h2>
+              <p class="section-subtitle">Structured day-by-day roadmap with realistic breaks and activity targets.</p>
+            </div>
+
+            <!-- Day Filter Pills -->
+            <div class="day-filter-pills" id="day-filter-pills">
+              <!-- Populated dynamically: Day 1, Day 2, ..., All -->
+            </div>
+          </div>
+
+          <!-- Daily Cards Container -->
+          <div class="days-container" id="days-container">
+            <!-- Day cards rendered dynamically -->
+          </div>
+        </div>
+
+        <!-- 7. AI RECOMMENDATIONS SECTION -->
+        <div class="recommendations-section card">
+          <div class="rec-header">
+            <span class="rec-icon">🤖</span>
+            <div>
+              <h3 class="card-title">AI Recommendations</h3>
+              <p class="section-subtitle">Tailored academic guidelines formulated for your timeline and target score.</p>
+            </div>
+          </div>
+          <div class="recommendations-grid" id="recommendations-grid">
+            <!-- Dynamically populated recommendations -->
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- STUDY TIMER MODAL (25-min focus, 5-min break) -->
+  <div id="timer-modal" class="modal-overlay hidden" role="dialog" aria-modal="true">
+    <div class="modal-card timer-modal-card">
+      <div class="modal-header">
+        <div class="modal-title-wrapper">
+          <span class="modal-icon">⏱️</span>
+          <h3 class="modal-title">StudyMate Focus Session</h3>
+        </div>
+        <button id="close-timer-btn" class="modal-close-btn" aria-label="Close modal">✕</button>
+      </div>
+
+      <div class="timer-body">
+        
+        <!-- Timer Mode Selector -->
+        <div class="timer-mode-pills">
+          <button id="mode-focus-btn" class="timer-mode-btn active" data-mode="focus">
+            🧠 Focus Session (25m)
+          </button>
+          <button id="mode-break-btn" class="timer-mode-btn" data-mode="break">
+            ☕ Rest Break (5m)
+          </button>
+        </div>
+
+        <!-- Current Focus Task Display -->
+        <div class="timer-current-task">
+          <span class="task-label">CURRENT ACTIVE SESSION</span>
+          <h4 class="task-title" id="timer-task-title">Mathematics – Concept Learning</h4>
+        </div>
+
+        <!-- Circular Progress Timer -->
+        <div class="timer-clock-display">
+          <svg class="progress-ring" width="220" height="220" viewBox="0 0 220 220">
+            <circle class="progress-ring-bg" stroke="#e2e8f0" stroke-width="10" fill="transparent" r="95" cx="110" cy="110"/>
+            <circle id="timer-progress-ring" class="progress-ring-circle" stroke="url(#timerGradient)" stroke-width="10" stroke-linecap="round" fill="transparent" r="95" cx="110" cy="110"/>
+            <defs>
+              <linearGradient id="timerGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#4f46e5" />
+                <stop offset="100%" stop-color="#7c3aed" />
+              </linearGradient>
+            </defs>
+          </svg>
+          <div class="timer-digits-wrapper">
+            <span class="timer-digits" id="timer-digits">25:00</span>
+            <span class="timer-state-label" id="timer-state-label">Ready</span>
+          </div>
+        </div>
+
+        <!-- Controls -->
+        <div class="timer-controls">
+          <button id="timer-start-pause-btn" class="btn btn-primary btn-lg timer-play-btn">
+            ▶ Start Focus
+          </button>
+          <button id="timer-reset-btn" class="btn btn-outline" title="Reset timer">
+            🔄 Reset
+          </button>
+          <button id="timer-switch-btn" class="btn btn-secondary" title="Switch between Focus and Break">
+            ☕ Switch to Break
+          </button>
+        </div>
+
+        <div class="timer-sound-toggle">
+          <label class="toggle-label">
+            <input type="checkbox" id="timer-sound-chk" checked>
+            <span>🔔 Sound chime when session finishes (Web Audio API)</span>
+          </label>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- AI API KEY SETTINGS MODAL -->
+  <div id="api-modal" class="modal-overlay hidden" role="dialog" aria-modal="true">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div class="modal-title-wrapper">
+          <span class="modal-icon">🔑</span>
+          <h3 class="modal-title">AI Engine Settings</h3>
+        </div>
+        <button id="close-api-btn" class="modal-close-btn" aria-label="Close modal">✕</button>
+      </div>
+
+      <div class="modal-body">
+        <p class="modal-text">
+          StudyMate AI operates with an intelligent built-in rule engine that works <strong>100% offline</strong> without any setup.
+        </p>
+        <p class="modal-text">
+          If you wish to enhance the plan with real-time generative reasoning, you can optionally provide a Google Gemini or OpenAI API key below:
+        </p>
+
+        <div class="form-group">
+          <label for="custom-api-key" class="form-label">Google Gemini or OpenAI API Key (Optional)</label>
+          <input type="password" id="custom-api-key" class="form-input" placeholder="AIza... or sk-...">
+          <span class="field-hint">Stored strictly in local memory during your workshop session.</span>
+        </div>
+
+        <div class="api-status-banner">
+          <span class="status-indicator active"></span>
+          <span>Offline Fallback Algorithm: <strong>Enabled & Verified</strong></span>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button id="save-api-key-btn" class="btn btn-primary">Save & Apply</button>
+        <button id="clear-api-key-btn" class="btn btn-outline">Clear Key</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Application Script -->
+  <script src="static/js/app.js"></script>
+</body>
+</html>
